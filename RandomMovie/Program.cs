@@ -134,7 +134,7 @@ namespace RandomMovie
             ShowMenu();
         }
 
-        private static void ReadMovie() // List all records registered.
+        private static void ReadMovie() // List all records registered or picked.
         {
             Console.WriteLine("");
 
@@ -196,6 +196,7 @@ namespace RandomMovie
                     using (var context = new RDBContext())
                     {
                         var listMovie = context.Tmovie.Where(x => x.Pick == true).OrderBy(x => x.PickDate).ToList();
+                        int totalPicked = context.Tmovie.Where(x => x.Pick == true).Count();
 
                         if (listMovie != null)
                         {
@@ -205,6 +206,8 @@ namespace RandomMovie
                                 Console.WriteLine("ID: " + movie.Idmovie + ". Title: " + movie.Title + ". Year: " + movie.Year + ".");
                             }
                             Console.ForegroundColor = ConsoleColor.Gray;
+                            Console.WriteLine("");
+                            Console.WriteLine("Total movie picked: " + totalPicked + ".");
                         }
 
                         else
@@ -394,14 +397,16 @@ namespace RandomMovie
             {
                 var random = new Random();
 
-                int listMovie = context.Tmovie.ToList().Count;
+                int totalMovie = context.Tmovie.Where(x => x.Pick == false).ToList().Count();
 
-                int randomNumber = random.Next(0, listMovie);
+                int randomNumber = random.Next(0, totalMovie);
+
+                Console.WriteLine("");
 
                 Console.WriteLine("");
                 Console.Write("The movie picked was: ");
 
-                var moviePicked = context.Tmovie.Where(x => x.Idmovie == randomNumber && x.Pick == false).FirstOrDefault();
+                var moviePicked = context.Tmovie.Where(x => x.Pick == false).Skip(randomNumber - 1).Take(1).FirstOrDefault();
 
                 Console.ForegroundColor = ConsoleColor.Yellow;
                 Console.WriteLine("ID: " + moviePicked.Idmovie + ". Title: " + moviePicked.Title + ". Year: " + moviePicked.Year + ".");
@@ -409,7 +414,7 @@ namespace RandomMovie
                 Console.WriteLine("");
 
                 moviePicked.Pick = true;
-                moviePicked.PickDate = DateTime.Now.Date;
+                moviePicked.PickDate = DateTime.Now;
 
                 context.Tmovie.Update(moviePicked);
                 var result = context.SaveChanges();

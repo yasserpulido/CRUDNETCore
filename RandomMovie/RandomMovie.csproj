@@ -3,6 +3,11 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp3.1</TargetFramework>
+    <ApplicationIcon>rm.ico</ApplicationIcon>
+    <Authors>Yasser Pulido</Authors>
+    <Product>Random Movie</Product>
+    <Copyright>MIT License</Copyright>
+    <NeutralLanguage>en</NeutralLanguage>
   </PropertyGroup>
 
   <ItemGroup>
